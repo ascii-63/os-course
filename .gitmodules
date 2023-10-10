@@ -1,0 +1,3 @@
+[submodule "pacam"]
+	path = pacam
+	url = https://github.com/acsii-63/os-course.git
