@@ -1,16 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
-
-#define SHARED_MEMORY_KEY 63
-
-#define ERROR_CODE_SHMGET 1
-#define ERROR_CODE_SHMAT 2
-#define ERROR_CODE_FORK 3
 
 // Define the struct for shared memory
 typedef struct
@@ -23,22 +16,10 @@ typedef struct
 
 int main()
 {
-    key_t key = ftok("/tmp", SHARED_MEMORY_KEY);                   // Generate a unique key for shared memory
+    key_t key = ftok("/tmp", 'S');                                 // Generate a unique key for shared memory
     int shmid = shmget(key, sizeof(SharedData), 0666 | IPC_CREAT); // Get shared memory segment
 
-    if (shmid == -1)
-    {
-        perror("shmget error. Exited with code 1.\n");
-        exit(ERROR_CODE_SHMGET);
-    }
-
     SharedData *shared_data = shmat(shmid, NULL, 0); // Attach shared memory segment
-
-    if (shared_data == (SharedData *)-1)
-    {
-        perror("shmat error. Exited with code 2.");
-        exit(ERROR_CODE_SHMAT);
-    }
 
     shared_data->ready = 0;
 
@@ -48,8 +29,8 @@ int main()
 
     if (child_pid < 0)
     {
-        perror("fork error. Exited with code 3.");
-        exit(ERROR_CODE_FORK);
+        perror("fork error.");
+        exit(1);
     }
     else if (child_pid == 0)
     { // Child process
@@ -63,14 +44,13 @@ int main()
         shared_data->ready = 0;
 
         shmdt(shared_data); // Detach shared memory segment
-
-        exit(EXIT_SUCCESS);
+        exit(0);
     }
     else
     { // Parent process
-        printf("x value: ");
+        printf("x = ");
         scanf("%d", &shared_data->x);
-        printf("y value: ");
+        printf("y = ");
         scanf("%d", &shared_data->y);
 
         shared_data->ready = 1;
@@ -83,9 +63,9 @@ int main()
 
         printf("z = %d\n", shared_data->z);
 
-        shmdt(shared_data);            // Detach shared memory segment
+        shmdt(shared_data);
         shmctl(shmid, IPC_RMID, NULL); // Remove shared memory segment
     }
 
-    return EXIT_SUCCESS;
+    return 0;
 }
