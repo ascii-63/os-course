@@ -1,4 +1,6 @@
+.vscode/
 temp/
 assignment/my_submission/menu
 assignment/my_submission/processes
-.vscode/
+assignment/my_submission/threads
+assignment/simple_version/threads
