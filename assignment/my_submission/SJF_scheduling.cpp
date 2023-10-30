@@ -107,8 +107,8 @@ void output()
         return;
     }
 
-    std::cout << "Process ID\tStart Time\tRun Time" << std::endl;
-    outputFile << "Process ID\tStart Time\tRun Time" << std::endl;
+    std::cout << "Process_ID\tStart_Time\tRun_Time" << std::endl;
+    outputFile << "Process_ID\tStart_Time\tRun_Time" << std::endl;
 
     for (const Process &process : process_list)
     {
