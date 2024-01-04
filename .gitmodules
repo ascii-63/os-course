@@ -1,0 +1,3 @@
+[submodule "turbo-rle"]
+	path = turbo-rle
+	url = https://github.com/acsii-63/turbo-rle.git
